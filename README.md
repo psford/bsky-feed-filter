@@ -39,7 +39,7 @@ Single Python process, three concurrent async tasks:
 ### Prerequisites
 
 1. Synology NAS with Docker/Container Manager
-2. Cloudflare account with a domain (psford.com)
+2. Cloudflare account with a domain (example.com)
 3. Bluesky app password (from https://bsky.app/settings/app-passwords)
 
 ### Setup
@@ -47,7 +47,7 @@ Single Python process, three concurrent async tasks:
 1. **Create Cloudflare Tunnel:**
    - Cloudflare Zero Trust → Networks → Tunnels → Create
    - Copy the tunnel token
-   - Add public hostname: `bsky-feed.psford.com` → `http://bsky-feed:3000`
+   - Add public hostname: `bsky-feed.example.com` → `http://bsky-feed:3000`
 
 2. **Configure:**
    ```bash
@@ -62,7 +62,7 @@ Single Python process, three concurrent async tasks:
 
 4. **Verify:**
    ```bash
-   curl https://bsky-feed.psford.com/.well-known/did.json
+   curl https://bsky-feed.example.com/.well-known/did.json
    ```
 
 5. **Register feed:**
@@ -79,7 +79,7 @@ Single Python process, three concurrent async tasks:
 pip install -r requirements.txt
 
 # Set environment variables
-export BLUESKY_HANDLE=psford.com
+export BLUESKY_HANDLE=example.com
 export BLUESKY_APP_PASSWORD=xxxx-xxxx-xxxx-xxxx
 export HOSTNAME=localhost
 export DATA_DIR=./data
@@ -99,9 +99,9 @@ curl "http://localhost:3000/xrpc/app.bsky.feed.getFeedSkeleton?feed=at://did:web
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `BLUESKY_HANDLE` | `psford.com` | Your Bluesky handle (without @) |
+| `BLUESKY_HANDLE` | `example.com` | Your Bluesky handle (without @) |
 | `BLUESKY_APP_PASSWORD` | — | App password for authentication |
-| `HOSTNAME` | `bsky-feed.psford.com` | Public hostname |
+| `HOSTNAME` | `bsky-feed.example.com` | Public hostname |
 | `PORT` | `3000` | Web server port |
 | `SELF_REPOST_MAX_AGE_HOURS` | `24` | Posts younger than this are filtered |
 | `FOLLOW_REFRESH_INTERVAL_SECONDS` | `3600` | How often to refresh follow list |

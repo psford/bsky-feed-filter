@@ -35,8 +35,8 @@ services:
     mem_limit: 256m
 
     environment:
-      - HOSTNAME=${HOSTNAME:-bsky-feed.psford.com}
-      - BLUESKY_HANDLE=${BLUESKY_HANDLE:-psford.com}
+      - HOSTNAME=${HOSTNAME:-bsky-feed.example.com}
+      - BLUESKY_HANDLE=${BLUESKY_HANDLE:-example.com}
       - BLUESKY_APP_PASSWORD=${BLUESKY_APP_PASSWORD}
       - PORT=3000
       - DATA_DIR=/data

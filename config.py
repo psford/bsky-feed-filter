@@ -8,12 +8,12 @@ from dotenv import load_dotenv
 load_dotenv(override=True)
 
 # Feed generator identity
-HOSTNAME = os.environ.get("HOSTNAME", "bsky-feed.psford.com")
+HOSTNAME = os.environ.get("HOSTNAME", "bsky-feed.example.com")
 FEED_URI = f"at://did:web:{HOSTNAME}/app.bsky.feed.generator/clean-following"
 SERVICE_DID = f"did:web:{HOSTNAME}"
 
 # Bluesky credentials (for follow-list fetch + feed registration)
-BLUESKY_HANDLE = os.environ.get("BLUESKY_HANDLE", "psford.com")
+BLUESKY_HANDLE = os.environ.get("BLUESKY_HANDLE", "example.com")
 BLUESKY_APP_PASSWORD = os.environ.get("BLUESKY_APP_PASSWORD", "")
 
 # Server
