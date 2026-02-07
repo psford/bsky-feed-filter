@@ -41,3 +41,8 @@ DB_RETENTION_HOURS = int(os.environ.get("DB_RETENTION_HOURS", "48"))
 
 # Feed pagination
 FEED_PAGE_SIZE = 50
+
+# Access control — only these DIDs can use the feed (empty = open to all)
+ALLOWED_DIDS = set(
+    filter(None, os.environ.get("ALLOWED_DIDS", "did:plc:j2e54qafn2nvzwbcrztngogz").split(","))
+)

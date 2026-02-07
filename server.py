@@ -32,6 +32,7 @@ from config import (
     FOLLOW_REFRESH_INTERVAL_SECONDS,
     DB_CLEANUP_INTERVAL_SECONDS,
     SELF_REPOST_MAX_AGE_HOURS,
+    ALLOWED_DIDS,
 )
 
 logging.basicConfig(
@@ -71,6 +72,30 @@ async def handle_describe_feed_generator(request: web.Request) -> web.Response:
     )
 
 
+def _extract_requester_did(request: web.Request) -> str | None:
+    """Extract the requesting user's DID from the Authorization JWT.
+
+    Bluesky's AppView sends a JWT with the user's DID as the 'iss' claim.
+    We only need to decode (not verify) since we're just checking identity.
+    """
+    auth = request.headers.get("Authorization", "")
+    if not auth.startswith("Bearer "):
+        return None
+    token = auth[7:]
+    try:
+        # JWT is base64url-encoded: header.payload.signature
+        # We only need the payload (middle part)
+        import base64
+
+        payload = token.split(".")[1]
+        # Add padding if needed
+        payload += "=" * (4 - len(payload) % 4)
+        data = json.loads(base64.urlsafe_b64decode(payload))
+        return data.get("iss")
+    except Exception:
+        return None
+
+
 async def handle_get_feed_skeleton(request: web.Request) -> web.Response:
     """GET /xrpc/app.bsky.feed.getFeedSkeleton — paginated feed skeleton."""
     feed_param = request.query.get("feed", "")
@@ -81,6 +106,13 @@ async def handle_get_feed_skeleton(request: web.Request) -> web.Response:
             {"error": "UnknownFeed", "message": f"Unknown feed: {feed_param}"},
             status=400,
         )
+
+    # Access control: only allowed DIDs get the feed
+    if ALLOWED_DIDS:
+        requester = _extract_requester_did(request)
+        if requester and requester not in ALLOWED_DIDS:
+            logger.info("Blocked feed request from %s", requester)
+            return web.json_response({"feed": []})
 
     limit = min(int(request.query.get("limit", FEED_PAGE_SIZE)), FEED_PAGE_SIZE)
     cursor = request.query.get("cursor")
