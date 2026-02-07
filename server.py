@@ -74,7 +74,9 @@ async def handle_describe_feed_generator(request: web.Request) -> web.Response:
 async def handle_get_feed_skeleton(request: web.Request) -> web.Response:
     """GET /xrpc/app.bsky.feed.getFeedSkeleton — paginated feed skeleton."""
     feed_param = request.query.get("feed", "")
-    if feed_param != FEED_URI:
+    # Bluesky sends the feed URI with the publisher's DID (did:plc:...),
+    # not the service DID (did:web:...). Match on rkey instead.
+    if not feed_param.endswith("/app.bsky.feed.generator/clean-following"):
         return web.json_response(
             {"error": "UnknownFeed", "message": f"Unknown feed: {feed_param}"},
             status=400,
